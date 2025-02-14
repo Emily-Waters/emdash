@@ -1,8 +1,11 @@
 import fs from "fs/promises";
 import path from "path";
+import { cwd } from "process";
 import { traverse } from "./traverse";
 
 export async function barrelize(dir: string) {
+  dir = path.join(cwd(), dir);
+
   await traverse(dir, async (entry, idx) => {
     const indexPath = path.join(entry.parentPath, "index.ts");
     if (idx === 0) {

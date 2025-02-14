@@ -1,57 +1,30 @@
 import fs from "fs/promises";
 import path from "path";
 import { cwd } from "process";
-import { traverse } from "./traverse";
+import { barrelize } from "./barrelize";
 
 export async function namespace(dir: string) {
-  await traverse(dir, async (entry, idx) => {
-    const indexPath = path.join(entry.parentPath, "index.ts");
-    if (idx === 0) {
-      await fs
-        .access(indexPath)
-        .then(() => fs.unlink(indexPath))
-        .catch(() => {});
-    }
+  await barrelize(dir);
+  dir = path.join(cwd(), dir);
 
-    if (entry.name === "index.ts") return "continue";
-    if (entry.name.startsWith(".")) return "continue";
-    if (entry.name.startsWith("__")) return "continue";
+  let indexContent = await fs.readFile(path.join(dir, "index.ts"), "utf8");
 
-    const fileName = entry.name.split(".")[0];
-    const content = `import { ${fileName} as _${fileName} } from "./${fileName}";\n`;
+  const matches = indexContent.matchAll(/export \* from ".\/([\w]+)";/g);
+  let content = [];
+  let namespaceContent = [];
 
-    await fs.appendFile(indexPath, content);
-  });
+  for (const match of matches) {
+    content.push(`import * as _${match[1]} from "./${match[1]}";`);
+    namespaceContent.push(`  export const ${match[1]} = _${match[1]};`);
+  }
 
-  await traverse(dir, async (entry, idx) => {
-    if (entry.isDirectory()) return;
-    if (entry.name.startsWith(".")) return "continue";
-    if (entry.name.startsWith("__")) return "continue";
-    if (entry.name !== "index.ts") return "continue";
+  content.push(
+    `export namespace ${path.basename(dir)} {`,
+    namespaceContent.join("\n"),
+    "}",
+    "",
+    `export default ${path.basename(dir)};`
+  );
 
-    const indexPath = path.join(entry.parentPath, "index.ts");
-    const namespace = path.basename(entry.parentPath);
-
-    let content = await fs.readFile(indexPath, "utf-8");
-
-    content += `\nnamespace ${namespace} {\n`;
-
-    const aliases = content.matchAll(/([\w]+) as (_[\w]+)/g);
-
-    for (const alias of aliases) {
-      const [_, name, _alias] = alias;
-      content += `  export const ${name} = ${_alias};\n`;
-    }
-
-    content += "}\n\n";
-
-    if (dir === entry.parentPath) {
-      content += `export default ${namespace};`;
-    } else {
-      content += `export { ${namespace} };`;
-    }
-    await fs.writeFile(indexPath, content);
-  });
+  await fs.writeFile(path.join(dir, "index.ts"), content.join("\n"));
 }
-
-namespace(path.join(cwd(), "emdash"));
