@@ -14,8 +14,6 @@ export namespace emdash {
   export import types = _types;
 }
 
-export default emdash;
-
 export const {
   class_,
   crypto,
@@ -23,7 +21,7 @@ export const {
   object,
   string,
   types
-}={
+} = {
   class_: _class_,
   crypto: _crypto,
   fs: _fs,
@@ -31,3 +29,5 @@ export const {
   string: _string,
   types: _types
 };
+
+export default emdash;

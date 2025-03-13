@@ -1,8 +1,10 @@
-type ObjectType = { [x: string]: unknown };
+export type ObjectType = {
+  [x: string]: unknown;
+};
 
-type ObjectKeys<T> = string & keyof T;
+export type ObjectKeys<T> = string & keyof T;
 
-type ObjectEntries<T> = [ObjectKeys<T>, T[ObjectKeys<T>]][];
+export type ObjectEntries<T> = [ObjectKeys<T>, T[ObjectKeys<T>]][];
 
 type FlatKeys<T> = T extends object
   ? {
@@ -18,8 +20,6 @@ type FlatValues<T, K> = K extends keyof T
     }[keyof T]
   : never;
 
-type FlattenObject<T extends ObjectType> = {
+export type FlattenObject<T extends ObjectType> = {
   [K in FlatKeys<T>]: FlatValues<T, K>;
 };
-
-export type { FlattenObject, ObjectEntries, ObjectKeys, ObjectType };
