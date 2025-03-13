@@ -17,3 +17,12 @@ console.log(capCam);
 
 const wihoutCapCam = emdash.object.omit(all, "capitalized", "camel");
 console.log(wihoutCapCam);
+
+const examplePattern = "**/emdash/**/*.ts";
+
+(async () => {
+  console.log("Globbing files...");
+  for await (const entry of emdash.fs.glob(examplePattern)) {
+    console.log(entry);
+  }
+})();
