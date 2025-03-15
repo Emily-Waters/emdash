@@ -2,17 +2,18 @@ import emdash from "..";
 import { SchemaType } from "../validate";
 import { AbstractSchema, NullishSchema, OpenApiSchema, OptionalSchema } from "./abstract";
 
-type Properties = Record<string, AbstractSchema>;
-
 export class ObjectSchema<
-  Def extends Properties = Properties
+  Def extends Record<string, AbstractSchema> = Record<string, AbstractSchema>
 > extends AbstractSchema<SchemaType.OBJECT> {
   constructor(public properties: Def) {
     super(SchemaType.OBJECT);
   }
 
-  toSchema() {
-    const entries = emdash.object.toEntries(this.properties);
+  toSchema(): OpenApiSchema<
+    SchemaType.OBJECT,
+    { [K in keyof Def]: emdash.openapi.InferSchemaType<Def[K]> }
+  > {
+    const entries = emdash.object.entries(this.properties);
 
     let required: string[] = [];
 
@@ -25,7 +26,7 @@ export class ObjectSchema<
 
         return [key, value.toSchema()];
       })
-    ) as { [K in keyof Def]: OpenApiSchema<Def[K]["type"]> };
+    ) as { [K in keyof Def]: emdash.openapi.InferSchemaType<Def[K]> };
 
     return {
       type: this.type,
@@ -36,16 +37,18 @@ export class ObjectSchema<
   }
 
   toValidator() {
-    const entries = emdash.object.toEntries(this.properties);
+    const entries = emdash.object.entries(this.properties);
 
     const properties = Object.fromEntries(
       entries.map(([key, value]) => [key, value.toValidator()])
-    ) as { [K in keyof Def]: emdash.validate.AbstractSchema<Def[K]["type"]> };
+    ) as { [K in keyof Def]: emdash.openapi.InferValdatorType<Def[K]> };
 
     return emdash.validate.object(properties).describe(this.description);
   }
 }
 
-export function object<Def extends Properties>(properties: Def): ObjectSchema<Def> {
+export function object<Def extends Record<string, AbstractSchema>>(
+  properties: Def
+): ObjectSchema<Def> {
   return new ObjectSchema(properties);
 }

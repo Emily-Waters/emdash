@@ -29,17 +29,22 @@ const schema = emdash.openapi
   })
   .describe("object");
 
+// const foo = emdash.openapi.number().optional().describe("foo");
+
+// const fooSchema = foo.toSchema();
+// console.log(fooSchema);
+
+// const fooValidator = foo.toValidator();
+// console.log(fooValidator);
+
+// const fooParsed = fooValidator.parse(undefined);
+// console.log(fooParsed);
+
 const asSchema = schema.toSchema();
 console.log(asSchema);
 
-asSchema.properties.baz.items;
-
 const asValidator = schema.toValidator();
-console.log(asValidator);
+// console.log(asValidator);
 
 const parsed = asValidator.parse(x);
 console.log(parsed);
-
-// const res = schema.send();
-
-// console.log(res);

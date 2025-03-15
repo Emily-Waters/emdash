@@ -1,17 +1,14 @@
 import emdash from "..";
 import { SchemaType } from "../validate";
-import { AbstractSchema } from "./abstract";
+import { AbstractSchema, OpenApiSchema } from "./abstract";
 
 export class NumberSchema extends AbstractSchema<SchemaType.NUMBER> {
   constructor() {
     super(SchemaType.NUMBER);
   }
 
-  toSchema() {
-    return {
-      type: this.type,
-      description: this.description,
-    };
+  toSchema(): OpenApiSchema<SchemaType.NUMBER> {
+    return { type: SchemaType.NUMBER, description: this.description };
   }
 
   toValidator() {

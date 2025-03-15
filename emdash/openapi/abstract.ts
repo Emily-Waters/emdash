@@ -10,47 +10,31 @@ export type SchemaValueMap<T = any> = {
   [SchemaType.OBJECT]: T;
 };
 
-export type OpenApiSchema<T extends emdash.validate.SchemaType = emdash.validate.SchemaType> =
-  T extends SchemaType.OBJECT
+type CommonSchema<T> = {
+  type: T;
+  nullable?: boolean;
+  description?: string;
+};
+
+export type OpenApiSchema<T extends SchemaType, SubType = any> = CommonSchema<T> &
+  (T extends SchemaType.OBJECT
     ? {
-        type: SchemaType.OBJECT;
-        description?: string;
-        properties: Record<string, OpenApiSchema>;
+        properties: SubType;
         propertyOrdering?: string[];
         required?: string[];
       }
     : T extends SchemaType.STRING
     ? {
-        type: SchemaType.STRING;
-        description?: string;
         enum?: [string, ...string[]];
       }
     : T extends SchemaType.ARRAY
     ? {
-        type: SchemaType.ARRAY;
-        description?: string;
-        items: OpenApiSchema;
+        items: SubType;
       }
-    : T extends SchemaType.NUMBER
-    ? {
-        type: SchemaType.NUMBER;
-        description?: string;
-      }
-    : T extends SchemaType.INTEGER
-    ? {
-        type: SchemaType.INTEGER;
-        description?: string;
-      }
-    : T extends SchemaType.BOOLEAN
-    ? {
-        type: SchemaType.BOOLEAN;
-        description?: string;
-      }
-    : never;
+    : {});
 
-export type InferValidator<T extends AbstractSchema> = ReturnType<T["toValidator"]>;
-export type InferValidatorReturn<T extends AbstractSchema> = ReturnType<InferValidator<T>["parse"]>;
-
+export type InferSchemaType<T extends AbstractSchema> = ReturnType<T["toSchema"]>;
+export type InferValdatorType<T extends AbstractSchema> = ReturnType<T["toValidator"]>;
 export abstract class AbstractSchema<
   T extends emdash.validate.SchemaType = emdash.validate.SchemaType
 > {
@@ -78,7 +62,7 @@ export abstract class AbstractSchema<
 export class OptionalSchema<
   TSchemaType extends SchemaType,
   T extends AbstractSchema<TSchemaType>
-> extends AbstractSchema<TSchemaType> {
+> extends AbstractSchema {
   constructor(public schema: T) {
     super(schema.type);
   }
@@ -95,7 +79,7 @@ export class OptionalSchema<
 export class NullishSchema<
   TSchemaType extends SchemaType,
   T extends AbstractSchema<TSchemaType>
-> extends AbstractSchema<TSchemaType> {
+> extends AbstractSchema {
   constructor(public schema: T) {
     super(schema.type);
   }

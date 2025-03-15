@@ -1,19 +1,18 @@
 import emdash from "..";
 import { SchemaType } from "../validate";
-import { AbstractSchema } from "./abstract";
+import { AbstractSchema, OpenApiSchema } from "./abstract";
 
 export class ArraySchema<
-  TSchemaType extends SchemaType = SchemaType,
-  Items extends AbstractSchema<TSchemaType> = AbstractSchema<TSchemaType>
+  ItemsType extends SchemaType = SchemaType
 > extends AbstractSchema<SchemaType.ARRAY> {
-  constructor(public items: Items) {
+  constructor(public items: AbstractSchema<ItemsType>) {
     super(SchemaType.ARRAY);
   }
 
-  toSchema() {
+  toSchema(): OpenApiSchema<SchemaType.ARRAY, ItemsType> {
     return {
       type: this.type,
-      items: this.items.toSchema(),
+      items: this.items.toSchema() as any,
       description: this.description,
     };
   }
@@ -24,8 +23,8 @@ export class ArraySchema<
   }
 }
 
-export function array<TSchemaType extends SchemaType, T extends AbstractSchema<TSchemaType>>(
-  items: T
-): ArraySchema<TSchemaType, T> {
-  return new ArraySchema<TSchemaType, T>(items);
+export function array<ItemsType extends SchemaType>(
+  items: AbstractSchema<ItemsType>
+): ArraySchema<ItemsType> {
+  return new ArraySchema(items);
 }
