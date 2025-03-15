@@ -4,4 +4,5 @@ export * from "./isPojo";
 export * from "./isUndefined";
 export * from "./omit";
 export * from "./pick";
+export * from "./toEntries";
 export * from "./traverse";

@@ -18,25 +18,28 @@ import emdash from "..";
 // const wihoutCapCam = emdash.object.omit(all, "capitalized", "camel");
 // console.log(wihoutCapCam);
 
-const examplePattern = "**/emdash/array/*.ts";
+const x = { foo: 1, bar: "string", baz: [1, 2, 3] };
 
-(async () => {
-  console.log("Globbing...");
+const schema = emdash.openapi
+  .object({
+    num: emdash.openapi.number().describe("foo"),
+    foo: emdash.openapi.number().optional().describe("foo"),
+    bar: emdash.openapi.string().nullish().describe("bar"),
+    baz: emdash.openapi.array(emdash.openapi.number()).describe("baz"),
+  })
+  .describe("object");
 
-  const res = await emdash.fs.globFirst(examplePattern);
-  console.log({ res });
+const asSchema = schema.toSchema();
+console.log(asSchema);
 
-  const perf = await emdash.performance.benchmark({
-    // traverse: async () => {
-    //   await emdash.fs.traverse(cwd(), () => {});
-    // },
-    // globGenerator: async () => {
-    //   for await (const entry of emdash.fs.globGenerator(examplePattern)) {
-    //   }
-    // },
-    // glob: async () => emdash.fs.glob(examplePattern),
-    globFirst: async () => emdash.fs.globFirst(examplePattern),
-  });
+asSchema.properties.baz.items;
 
-  console.table(...perf);
-})();
+const asValidator = schema.toValidator();
+console.log(asValidator);
+
+const parsed = asValidator.parse(x);
+console.log(parsed);
+
+// const res = schema.send();
+
+// console.log(res);
