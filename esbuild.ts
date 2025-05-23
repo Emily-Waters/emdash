@@ -1,5 +1,4 @@
 import * as esbuild from "esbuild";
-import * as fs from "fs";
 import emdash from "./emdash";
 
 const args = process.argv.slice(2);
@@ -14,30 +13,23 @@ const options: esbuild.BuildOptions = {
   define: {
     "process.env.NODE_ENV": watch ? '"development"' : '"production"',
   },
+  plugins: [
+    {
+      name: "namespace",
+      setup(build) {
+        build.onStart(async () => {
+          console.log("Namespacing exports...");
+          await emdash.fs.namespace("emdash");
+          console.log("Namespacing done");
+        });
+      },
+    },
+  ],
 };
 
 async function main() {
-  await emdash.fs.namespace("emdash");
-
   if (watch) {
     const ctx = await esbuild.context(options);
-
-    let ns = false;
-
-    fs.watch("emdash", { recursive: true }, async (event, filename) => {
-      if (filename?.includes("index.ts")) {
-        return;
-      }
-
-      if (!ns) {
-        ns = true;
-        console.log(`[${event}]: ${filename}`);
-        await emdash.fs
-          .namespace("emdash")
-          .then(() => ctx.rebuild())
-          .then(() => (ns = false));
-      }
-    });
 
     await ctx.watch();
   } else {
