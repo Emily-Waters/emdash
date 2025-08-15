@@ -1,11 +1,9 @@
 import emdash from "..";
-import { SchemaType } from "../validate";
+import { Infer, SchemaType } from "../validate";
 import { AbstractSchema, OpenApiSchema } from "./abstract";
 
-export class ArraySchema<
-  ItemsType extends SchemaType = SchemaType
-> extends AbstractSchema<SchemaType.ARRAY> {
-  constructor(public items: AbstractSchema<ItemsType>) {
+export class ArraySchema<Items extends AbstractSchema> extends AbstractSchema<SchemaType.ARRAY> {
+  constructor(public items: Items) {
     super(SchemaType.ARRAY);
   }
 
@@ -15,13 +13,11 @@ export class ArraySchema<
     description: this.description,
   };
 
-  parse(value: unknown) {
+  parse(value: unknown): Infer<Items>[] {
     return emdash.validate.array(this.items).parse(value);
   }
 }
 
-export function array<ItemsType extends SchemaType>(
-  items: AbstractSchema<ItemsType>
-): ArraySchema<ItemsType> {
+export function array<Items extends AbstractSchema>(items: Items): ArraySchema<Items> {
   return new ArraySchema(items);
 }

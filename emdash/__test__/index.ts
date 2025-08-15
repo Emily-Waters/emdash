@@ -29,9 +29,32 @@ const schema = emdash.openapi
     num: emdash.openapi.number().describe("foo"),
     foo: emdash.openapi.number().nullish().describe("foo"),
     bar: emdash.openapi.string().nullish().describe("bar"),
-    baz: emdash.openapi.array(emdash.openapi.number()).describe("baz"),
+    baz: emdash.openapi
+      .array(
+        emdash.openapi.object({
+          num: emdash.openapi.number().describe("num"),
+        })
+      )
+      .describe("baz"),
     bag: emdash.openapi.array(emdash.openapi.number()).describe("bag"),
     qux: emdash.openapi.array(emdash.openapi.string().optional()).describe("qux"),
+  })
+  .describe("object");
+
+const schema2 = emdash.validate
+  .object({
+    num: emdash.validate.number().describe("foo"),
+    foo: emdash.validate.number().nullish().describe("foo"),
+    bar: emdash.validate.string().nullish().describe("bar"),
+    baz: emdash.validate
+      .array(
+        emdash.validate.object({
+          num: emdash.validate.number().describe("num"),
+        })
+      )
+      .describe("baz"),
+    bag: emdash.validate.array(emdash.validate.number()).describe("bag"),
+    qux: emdash.validate.array(emdash.validate.string().optional()).describe("qux"),
   })
   .describe("object");
 
@@ -48,6 +71,7 @@ console.log(
 );
 
 type Output = emdash.validate.Infer<typeof schema>;
+type Output2 = emdash.validate.Infer<typeof schema2>;
 
 // // const foo = emdash.openapi.number().optional().describe("foo");
 

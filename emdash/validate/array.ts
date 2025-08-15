@@ -9,7 +9,7 @@ export class ArraySchema<
 
   parse(value: unknown): Infer<Items>[] {
     if (Array.isArray(value)) {
-      const returnValues: Infer<Items>[] = [];
+      const returnValues: Infer<typeof this.items>[] = [];
 
       for (let i = 0; i < value.length; i++) {
         try {
