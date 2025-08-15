@@ -1,4 +1,4 @@
-import { AbstractSchema, SchemaType } from "./abstract";
+import { AbstractSchema, SchemaType, throwInvalidValueError } from "./abstract";
 
 export class BooleanSchema extends AbstractSchema<SchemaType.BOOLEAN> {
   constructor() {
@@ -10,7 +10,7 @@ export class BooleanSchema extends AbstractSchema<SchemaType.BOOLEAN> {
       return value;
     }
 
-    this.throwInvalidValueError(value);
+    throwInvalidValueError(value, this);
   }
 }
 

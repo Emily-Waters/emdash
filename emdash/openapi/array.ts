@@ -11,7 +11,7 @@ export class ArraySchema<
 
   schema: OpenApiSchema<SchemaType.ARRAY> = {
     type: this.type,
-    items: this.items,
+    items: this.items.schema,
     description: this.description,
   };
 

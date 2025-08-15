@@ -1,13 +1,13 @@
 import emdash from "..";
 import { SchemaType } from "../validate";
-import { AbstractSchema } from "./abstract";
+import { AbstractSchema, OpenApiSchema } from "./abstract";
 
 class StringSchema extends AbstractSchema<SchemaType.STRING> {
   constructor() {
     super(SchemaType.STRING);
   }
 
-  schema = {
+  schema: OpenApiSchema<SchemaType.STRING> = {
     type: this.type,
     description: this.description,
   };

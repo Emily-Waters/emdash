@@ -49,16 +49,16 @@ export abstract class AbstractSchema<
   nullish() {
     return new NullishSchema(this);
   }
+}
 
-  protected throwInvalidValueError(value: unknown): never {
-    throw new Error(
-      `Invalid value, expected ${this.type} but received ${typeof value}: ${JSON.stringify(
-        value,
-        null,
-        2
-      )}`
-    );
-  }
+export function throwInvalidValueError(value: unknown, schema: AbstractSchema): never {
+  throw new Error(
+    `Invalid value, expected ${schema.type} but received ${typeof value}:\n\n${JSON.stringify(
+      value,
+      null,
+      2
+    )}`
+  );
 }
 
 class OptionalSchema<T extends AbstractSchema> extends AbstractSchema {

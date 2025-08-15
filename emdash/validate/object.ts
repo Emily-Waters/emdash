@@ -1,5 +1,5 @@
 import { isPojo } from "../object";
-import { AbstractSchema, Infer, SchemaType } from "./abstract";
+import { AbstractSchema, Infer, SchemaType, throwInvalidValueError } from "./abstract";
 
 type Properties = Record<string, AbstractSchema>;
 
@@ -36,7 +36,7 @@ export class ObjectSchema<
       return result;
     }
 
-    this.throwInvalidValueError(value);
+    throwInvalidValueError(value, this);
   }
 }
 

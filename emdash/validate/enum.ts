@@ -1,4 +1,4 @@
-import { AbstractSchema, SchemaType } from "./abstract";
+import { AbstractSchema, SchemaType, throwInvalidValueError } from "./abstract";
 
 export class EnumSchema<
   T extends [string, ...string[]] = [string, ...string[]]
@@ -14,7 +14,7 @@ export class EnumSchema<
       }
     }
 
-    this.throwInvalidValueError(value);
+    throwInvalidValueError(value, this);
   }
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "@emilywaters/emdash",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "main": "dist/index.js",
   "files": [
     "dist"

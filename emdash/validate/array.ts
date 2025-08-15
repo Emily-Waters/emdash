@@ -1,4 +1,4 @@
-import { AbstractSchema, Infer, SchemaType } from "./abstract";
+import { AbstractSchema, Infer, SchemaType, throwInvalidValueError } from "./abstract";
 
 export class ArraySchema<
   Items extends AbstractSchema = AbstractSchema
@@ -24,7 +24,7 @@ export class ArraySchema<
       return returnValues;
     }
 
-    this.throwInvalidValueError(value);
+    throwInvalidValueError(value, this);
   }
 }
 

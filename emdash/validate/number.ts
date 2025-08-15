@@ -1,4 +1,4 @@
-import { AbstractSchema, SchemaType } from "./abstract";
+import { AbstractSchema, SchemaType, throwInvalidValueError } from "./abstract";
 
 export class NumberSchema extends AbstractSchema<SchemaType.NUMBER> {
   constructor() {
@@ -10,7 +10,7 @@ export class NumberSchema extends AbstractSchema<SchemaType.NUMBER> {
       return value;
     }
 
-    this.throwInvalidValueError(value);
+    throwInvalidValueError(value, this);
   }
 }
 
