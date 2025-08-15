@@ -2,7 +2,7 @@ import emdash from "..";
 import { SchemaType } from "../validate";
 import { AbstractSchema, OpenApiSchema } from "./abstract";
 
-class StringSchema extends AbstractSchema<SchemaType.STRING> {
+export class StringSchema extends AbstractSchema<SchemaType.STRING> {
   constructor() {
     super(SchemaType.STRING);
   }

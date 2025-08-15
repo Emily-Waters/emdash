@@ -2,7 +2,7 @@ import emdash from "..";
 import { SchemaType } from "../validate";
 import { AbstractSchema, OpenApiSchema } from "./abstract";
 
-class BooleanSchema extends AbstractSchema<SchemaType.BOOLEAN> {
+export class BooleanSchema extends AbstractSchema<SchemaType.BOOLEAN> {
   constructor() {
     super(SchemaType.BOOLEAN);
   }
