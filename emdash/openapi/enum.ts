@@ -7,16 +7,14 @@ export class EnumSchema extends AbstractSchema<SchemaType.STRING> {
     super(SchemaType.STRING);
   }
 
-  toSchema(): OpenApiSchema<SchemaType.STRING> {
-    return {
-      type: this.type,
-      enum: this.values,
-      description: this.description,
-    };
-  }
+  schema: OpenApiSchema<SchemaType.STRING> = {
+    type: this.type,
+    enum: this.values,
+    description: this.description,
+  };
 
-  toValidator() {
-    return emdash.validate.enums(this.values).describe(this.description);
+  parse(value: unknown): string {
+    return emdash.validate.enums(this.values).parse(value);
   }
 }
 

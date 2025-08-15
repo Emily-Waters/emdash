@@ -1,5 +1,5 @@
 import { isPojo } from "../object";
-import { AbstractSchema, InferSchemaType, SchemaType } from "./abstract";
+import { AbstractSchema, Infer, SchemaType } from "./abstract";
 
 type Properties = Record<string, AbstractSchema>;
 
@@ -12,7 +12,7 @@ export class ObjectSchema<
 
   parse<
     T extends {
-      [K in keyof Def]: InferSchemaType<Def[K]>;
+      [K in keyof Def]: Infer<Def[K]>;
     }
   >(value: unknown): T {
     if (isPojo(value)) {
@@ -22,12 +22,21 @@ export class ObjectSchema<
         const property = this.properties[key];
         const propertyValue = value[key];
 
-        result[key] = property.parse(propertyValue);
+        try {
+          result[key] = property.parse(propertyValue);
+        } catch (error) {
+          throw new Error(
+            `Invalid value for property "${key}": ${
+              error instanceof Error ? error.message : String(error)
+            }`
+          );
+        }
       }
 
       return result;
     }
-    throw new Error("Invalid value");
+
+    this.throwInvalidValueError(value);
   }
 }
 

@@ -10,7 +10,7 @@ export class BooleanSchema extends AbstractSchema<SchemaType.BOOLEAN> {
       return value;
     }
 
-    throw new Error("Invalid value");
+    this.throwInvalidValueError(value);
   }
 }
 

@@ -9,17 +9,14 @@ export class ArraySchema<
     super(SchemaType.ARRAY);
   }
 
-  toSchema(): OpenApiSchema<SchemaType.ARRAY, ItemsType> {
-    return {
-      type: this.type,
-      items: this.items.toSchema() as any,
-      description: this.description,
-    };
-  }
+  schema: OpenApiSchema<SchemaType.ARRAY> = {
+    type: this.type,
+    items: this.items,
+    description: this.description,
+  };
 
-  toValidator() {
-    const items = this.items.toValidator();
-    return emdash.validate.array(items).describe(this.description);
+  parse(value: unknown) {
+    return emdash.validate.array(this.items).parse(value);
   }
 }
 

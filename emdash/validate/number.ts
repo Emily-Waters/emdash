@@ -10,7 +10,7 @@ export class NumberSchema extends AbstractSchema<SchemaType.NUMBER> {
       return value;
     }
 
-    throw new Error("Invalid value");
+    this.throwInvalidValueError(value);
   }
 }
 

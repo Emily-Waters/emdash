@@ -14,7 +14,7 @@ export class EnumSchema<
       }
     }
 
-    throw new Error("Invalid value");
+    this.throwInvalidValueError(value);
   }
 }
 

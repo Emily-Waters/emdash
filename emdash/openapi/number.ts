@@ -7,12 +7,13 @@ export class NumberSchema extends AbstractSchema<SchemaType.NUMBER> {
     super(SchemaType.NUMBER);
   }
 
-  toSchema(): OpenApiSchema<SchemaType.NUMBER> {
-    return { type: SchemaType.NUMBER, description: this.description };
-  }
+  schema: OpenApiSchema<SchemaType.NUMBER> = {
+    type: this.type,
+    description: this.description,
+  };
 
-  toValidator() {
-    return emdash.validate.number().describe(this.description);
+  parse(value: unknown): number {
+    return emdash.validate.number().parse(value);
   }
 }
 

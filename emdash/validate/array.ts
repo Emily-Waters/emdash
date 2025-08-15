@@ -1,4 +1,4 @@
-import { AbstractSchema, InferSchemaType, SchemaType } from "./abstract";
+import { AbstractSchema, Infer, SchemaType } from "./abstract";
 
 export class ArraySchema<
   Items extends AbstractSchema = AbstractSchema
@@ -7,12 +7,24 @@ export class ArraySchema<
     super(SchemaType.ARRAY);
   }
 
-  parse(value: unknown): InferSchemaType<Items>[] {
+  parse(value: unknown): Infer<Items>[] {
     if (Array.isArray(value)) {
-      return value.map((item) => this.items.parse(item));
+      const returnValues: Infer<Items>[] = [];
+
+      for (let i = 0; i < value.length; i++) {
+        try {
+          const val = this.items.parse(value[i]);
+          returnValues.push(val);
+        } catch (error) {
+          throw new Error(
+            `Invalid value at index ${i}: ${error instanceof Error ? error.message : String(error)}`
+          );
+        }
+      }
+      return returnValues;
     }
 
-    throw new Error("Invalid value");
+    this.throwInvalidValueError(value);
   }
 }
 
