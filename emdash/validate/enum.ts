@@ -1,16 +1,14 @@
 import { AbstractSchema, SchemaType, throwInvalidValueError } from "./abstract";
 
-export class EnumSchema<
-  T extends [string, ...string[]] = [string, ...string[]]
-> extends AbstractSchema<SchemaType.STRING> {
+export class EnumSchema<T extends string[]> extends AbstractSchema<SchemaType.STRING> {
   constructor(public values: T) {
     super(SchemaType.STRING);
   }
 
   parse(value: unknown): T[number] {
     if (typeof value === "string") {
-      if (this.values.includes(value)) {
-        return value;
+      if (this.values.includes(value as any)) {
+        return value as T[number];
       }
     }
 
@@ -18,6 +16,6 @@ export class EnumSchema<
   }
 }
 
-export function enums<T extends [string, ...string[]]>(values: [...T]) {
+export function enums<T extends string[]>(values: T) {
   return new EnumSchema(values);
 }

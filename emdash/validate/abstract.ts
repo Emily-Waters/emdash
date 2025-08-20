@@ -64,8 +64,8 @@ export function throwInvalidValueError(value: unknown, schema: AbstractSchema): 
 class OptionalSchema<T extends AbstractSchema> extends AbstractSchema {
   isOptional = false;
 
-  constructor(public schema: T) {
-    super(schema.type);
+  constructor(public baseType: T) {
+    super(baseType.type);
   }
 
   parse(value: unknown): Infer<T> | undefined {
@@ -73,15 +73,15 @@ class OptionalSchema<T extends AbstractSchema> extends AbstractSchema {
       return undefined;
     }
 
-    return this.schema.parse(value);
+    return this.baseType.parse(value);
   }
 }
 
 class NullSchema<T extends AbstractSchema> extends AbstractSchema {
   isNullable = true;
 
-  constructor(public schema: T) {
-    super(schema.type);
+  constructor(public baseType: T) {
+    super(baseType.type);
   }
 
   parse(value: unknown): Infer<T> | null {
@@ -89,7 +89,7 @@ class NullSchema<T extends AbstractSchema> extends AbstractSchema {
       return null;
     }
 
-    return this.schema.parse(value);
+    return this.baseType.parse(value);
   }
 }
 
@@ -98,8 +98,8 @@ class NullishSchema<T extends AbstractSchema> extends AbstractSchema {
   isNullable = true;
   isNullish = true;
 
-  constructor(public schema: T) {
-    super(schema.type);
+  constructor(public baseType: T) {
+    super(baseType.type);
   }
 
   parse(value: unknown): Infer<T> | undefined | null {
@@ -107,6 +107,6 @@ class NullishSchema<T extends AbstractSchema> extends AbstractSchema {
       return value;
     }
 
-    return this.schema.parse(value);
+    return this.baseType.parse(value);
   }
 }

@@ -24,15 +24,27 @@ console.log(wihoutCapCam);
 
 // const x = { foo: 1, bar: "string", baz: [1, 2, 3] };
 
+const enumValue = { TEST: "TEST", ONETWO: "ONETWO" };
+
+enum Test {
+  TEST = "TEST",
+  ONETWO = "ONETWO",
+}
+
 const schema = emdash.openapi
   .object({
     num: emdash.openapi.number().describe("foo"),
     foo: emdash.openapi.number().nullish().describe("foo"),
     bar: emdash.openapi.string().nullish().describe("bar"),
+    bbb: emdash.openapi.string().optional(),
+    test: emdash.openapi.enums(["ONE", "TWO"] as const).describe("test"),
     baz: emdash.openapi
       .array(
         emdash.openapi.object({
           num: emdash.openapi.number().describe("num"),
+          bullets: emdash.openapi
+            .array(emdash.openapi.string().describe("bullets"))
+            .describe("bullets"),
         })
       )
       .describe("baz"),
@@ -41,37 +53,11 @@ const schema = emdash.openapi
   })
   .describe("object");
 
-const schema2 = emdash.validate
-  .object({
-    num: emdash.validate.number().describe("foo"),
-    foo: emdash.validate.number().nullish().describe("foo"),
-    bar: emdash.validate.string().nullish().describe("bar"),
-    baz: emdash.validate
-      .array(
-        emdash.validate.object({
-          num: emdash.validate.number().describe("num"),
-        })
-      )
-      .describe("baz"),
-    bag: emdash.validate.array(emdash.validate.number()).describe("bag"),
-    qux: emdash.validate.array(emdash.validate.string().optional()).describe("qux"),
-  })
-  .describe("object");
-
-console.log(
-  "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
-  schema.parse({
-    num: 1,
-    foo: undefined,
-    bar: null,
-    baz: [1, 2, 3],
-    bag: [undefined, 1, null],
-    qux: ["a", "b", "c"],
-  })
-);
+console.log(JSON.stringify(schema.schema, null, 2));
 
 type Output = emdash.validate.Infer<typeof schema>;
-type Output2 = emdash.validate.Infer<typeof schema2>;
+
+const parsed = schema.parse({});
 
 // // const foo = emdash.openapi.number().optional().describe("foo");
 
