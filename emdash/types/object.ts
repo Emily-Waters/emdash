@@ -4,7 +4,7 @@ export type ObjectType = {
 
 export type ObjectKeys<T> = string & keyof T;
 
-export type ObjectEntries<T> = [ObjectKeys<T>, T[ObjectKeys<T>]][];
+export type ObjectEntries<T> = { [K in keyof T]: [K, T[K]] }[keyof T][];
 
 type FlatKeys<T> = T extends object
   ? {
