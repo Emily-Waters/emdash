@@ -59,6 +59,11 @@ type Output = emdash.validate.Infer<typeof schema>;
 
 const parsed = schema.parse({});
 
+const obj = { a: 1, b: "2", c: true };
+
+const picked = emdash.object.pick(obj, "b");
+const omitted = emdash.object.omit(obj, "b");
+
 // // const foo = emdash.openapi.number().optional().describe("foo");
 
 // // const fooSchema = foo.toSchema();
